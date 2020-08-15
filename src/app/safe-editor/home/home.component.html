@@ -1,0 +1,91 @@
+<div class="h-100 w-100 position-absolute" [ngClass]="{invisible : !pageLoading}">
+  <div class="ph-item">
+    <div class="ph-col-12">
+      <div class="ph-row">
+        <div class="ph-col-2"></div>
+        <div class="ph-col-10 empty"></div>
+        <div class="ph-col-12 empty"></div>
+        <div class="ph-col-3 big"></div>
+        <div class="ph-col-7 empty big"></div>
+        <div class="ph-col-2 big"></div>
+      </div>
+      <div class="ph-col-12 d-flex">
+        <div class="ph-col-9">
+          <div class="ph-picture" style="height: 40vh;"></div>
+        </div>
+        <div class="ph-col-3 pl-3">
+          <div class="ph-picture" style="height: 30vh;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<nz-page-header [ngClass]="{invisible : noData || pageLoading}" class="site-page-header" nzBackIcon>
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="'/'">Trang chủ</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Hỗ trợ soạn thảo</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-page-header-title>{{isCreateMode? 'Bài viết mới': 'Chỉnh sửa'}}</nz-page-header-title>
+  <nz-page-header-subtitle>
+    <span nz-typography nzCopyable nzEditable [(nzContent)]="titleModel"></span>
+  </nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <!-- <button nz-button (click)="test()">
+      Test
+    </button> -->
+    <button nz-button (click)="openSetingsDrawer()">
+      <i nz-icon nzType="setting" nzTheme="outline"></i>Cài đặt
+    </button>
+    <button nz-button nzType="primary" (click)="onSaveEditor()">
+      <i nz-icon nzType="save" nzTheme="outline"></i>Lưu
+    </button>
+  </nz-page-header-extra>
+  <nz-page-header-content>
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
+      <div nz-col nzSpan="18">
+        <quill-editor [formControl]="editorControl" [modules]="modules" placeholder="Nhập cái gì đó..."
+          [styles]="{'max-height': 'calc(100vh - 300px)'}" (onEditorCreated)="onEditorCreated($event)"
+          (onContentChanged)="onContentChangedWrap($event)" (onSelectionChanged)="onSelectionChanged($event)">
+        </quill-editor>
+      </div>
+      <div nz-col nzSpan="6">
+        <h3>Chức năng</h3>
+        <form nz-form>
+          <nz-form-item>
+            <nz-form-label>Cảnh báo độ dài câu</nz-form-label>
+            <nz-form-control>
+              <nz-switch [formControl]="longSentenceWarningControl"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Cảnh báo độ đoạn</nz-form-label>
+            <nz-form-control>
+              <nz-switch [formControl]="longParagraphWarningControl"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+        <app-text-info [text]="text" [(keyword)]="key"></app-text-info>
+      </div>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+
+<div style="top: 0;" class="h-100 w-100 position-absolute d-flex justify-content-center align-items-center" [ngClass]="{invisible : !noData }">
+  <nz-empty [nzNotFoundImage]="notFoundImage" [nzNotFoundContent]="contentTpl">
+    <ng-template #notFoundImage>
+      <ng-lottie [options]="options">
+      </ng-lottie>
+    </ng-template>
+    <ng-template #contentTpl>
+      <span> Bài viết này đã bị xóa hoặc không tồn tại <a [routerLink]="['/safe-editor']">nhấp vào đây để tạo bài viết mới</a> </span>
+    </ng-template>
+  </nz-empty>
+</div>
+<!-- title modal -->
+<app-title-modal [titleModel]="titleModel" [originalTitle]="articleModel?.title" (onSubmit)="saveArtice($event)">
+</app-title-modal>
+
+<!-- drawer settings -->
+<app-settings-drawer></app-settings-drawer>

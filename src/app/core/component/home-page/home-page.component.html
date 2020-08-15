@@ -1,0 +1,11 @@
+<div class="h-100 w-100  d-flex justify-content-center align-items-center">
+    <nz-empty [nzNotFoundImage]="notFoundImage" [nzNotFoundContent]="contentTpl">
+        <ng-template #notFoundImage>
+            <ng-lottie [options]="options">
+            </ng-lottie>
+        </ng-template>
+        <ng-template #contentTpl>
+            <span> Sử dụng trình soạn thảo bằng cách <a [routerLink]="['/safe-editor']">nhấp vào đây</a> </span>
+        </ng-template>
+    </nz-empty>
+</div>

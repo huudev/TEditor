@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "thuy-2038"
+  },
+  "targets": {
+    "thuy-2038": {
+      "hosting": {
+        "TEditor": [
+          "thuy-2038"
+        ]
+      }
+    }
+  }
+}

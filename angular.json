@@ -17,6 +17,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "firebase/app",
+              "@firebase/app",
+              "@firebase/database",
+              "@ant-design/colors",
+              "lottie-web"
+            ],
             "outputPath": "dist/TEditor",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -25,9 +32,19 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
+              "src/assets/css/placeholder-loading.min.css",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.snow.css",
+              "src/assets/css/bootstrap-utilities.min.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -121,8 +138,13 @@
               "devServerTarget": "TEditor:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "TEditor"
 }

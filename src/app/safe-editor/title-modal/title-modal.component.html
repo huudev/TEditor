@@ -1,0 +1,22 @@
+<nz-modal [nzVisible]="store.titleModalVisible$ | async" nzTitle="Nhập tên bài viết" (nzOnCancel)="titleModalCancel()">
+    <form nz-form [formGroup]="titleForm">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Tên bài viết</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Đang xác thực..." [nzErrorTip]="titleErrorTpl">
+          <input nz-input formControlName="title" placeholder="nhập tiêu đề bài viết..." />
+          <ng-template #titleErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Hãy nhập tên bài viết
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicated')">
+              Tên này đã có rồi
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="titleModalCancel()">Hủy</button>
+      <button nz-button nzType="primary" (click)="titleModalOk()" [nzLoading]="store.articleSaveLoading$ | async">Lưu bài viết</button>
+    </div>
+  </nz-modal>

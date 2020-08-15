@@ -1,0 +1,58 @@
+<nz-drawer [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
+  [nzMaskClosable]="true" [nzWidth]="720" [nzVisible]="store.settingsDrawerVisible$ | async" nzTitle="Cài đặt"
+  (nzOnClose)="closeSetingsDrawer()">
+  <form nz-form [formGroup]="settingsForm">
+    <nz-divider nzText="Trong câu" nzOrientation="left"></nz-divider>
+    <div nz-row [nzGutter]="8">
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label>Số từ cảnh báo</nz-form-label>
+          <nz-form-control>
+            <nz-slider formControlName="range" [nzMarks]="marks" nzIncluded nzRange [nzMin]="10" [nzMax]="40">
+            </nz-slider>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Màu cảnh báo</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="mediumColor" [compareWith]="compareFn" nzAllowClear nzPlaceHolder="Chọn màu">
+              <nz-option *ngFor="let color of mediumColors" nzCustomContent [nzLabel]="color.name" [nzValue]="color">
+                <p [ngStyle]="{backgroundColor: color.value}">{{color.name}}</p>
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Màu quá dài</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="longColor" [compareWith]="compareFn" nzAllowClear nzPlaceHolder="Chọn màu">
+              <nz-option *ngFor="let color of longColors" nzCustomContent [nzLabel]="color.name" [nzValue]="color">
+                <p [ngStyle]="{backgroundColor: color.value}">{{color.name}}</p>
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <nz-divider nzText="Trong đoạn" nzOrientation="left"></nz-divider>
+    <div nz-row [nzGutter]="8">
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label>Số từ cảnh báo</nz-form-label>
+          <nz-form-control>
+            <nz-slider formControlName="longParagraph" [nzMin]="80" [nzMax]="200"></nz-slider>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <!-- <div nz-row [nzGutter]="8" nzJustify="center">
+      <div nz-col nzSpan="4">
+        <button nz-button nzType="primary" (click)="save()">Lưu</button>
+      </div>
+    </div> -->
+  </form>
+</nz-drawer>

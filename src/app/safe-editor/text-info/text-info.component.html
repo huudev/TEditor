@@ -1,0 +1,8 @@
+<nz-descriptions nzTitle="Thông tin văn bản">
+    <nz-descriptions-item nzTitle="Số câu" [nzSpan]="3">{{sentences}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Số từ" [nzSpan]="3">{{words}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Từ khóa" [nzSpan]="3">
+      <input nz-input [formControl]="keywordControl" placeholder="nhập từ khóa..." />
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Mật độ từ khóa">{{keywordDensity}}%</nz-descriptions-item>
+  </nz-descriptions>
