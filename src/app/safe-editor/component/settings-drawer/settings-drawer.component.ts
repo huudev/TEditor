@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { take, tap, switchMap, debounceTime } from 'rxjs/operators';
 
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { NzMarks } from 'ng-zorro-antd/slider';
 
-import { StoreService } from '../store.service';
-import { MEDIUM_COLORS, DARK_COLORS, DEBOUNCE_TIME_DEFAFULT, LONG_PARAGRAPH_DEFAULT } from '@shared/app.const';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { take, tap, switchMap, debounceTime } from 'rxjs/operators';
+import { MEDIUM_COLORS, DARK_COLORS, DEBOUNCE_TIME_DEFAFULT } from '@shared/app.const';
+import { Select } from '@ngxs/store';
+import { EditorState } from '@app/safe-editor/state/editor.state';
+import { Observable } from 'rxjs';
+import { Settings } from '../../model/settings.model';
+import { Dispatch } from '@ngxs-labs/dispatch-decorator';
+import { ChangeSettings } from '../../action/editor.action';
+import { CloseSetingsDrawer } from '../../action/home.action';
+import { HomeState } from '@app/safe-editor/state/home.state';
 
 @UntilDestroy()
 @Component({
@@ -15,6 +22,8 @@ import { take, tap, switchMap, debounceTime } from 'rxjs/operators';
   styleUrls: ['./settings-drawer.component.scss']
 })
 export class SettingsDrawerComponent implements OnInit {
+  @Select(HomeState.setingsDrawerVisible)
+  settingsDrawerVisible$: Observable<boolean>
   debounceTime = DEBOUNCE_TIME_DEFAFULT;
   marks: NzMarks = {
     10: '10',
@@ -39,11 +48,10 @@ export class SettingsDrawerComponent implements OnInit {
 
   mediumColors = MEDIUM_COLORS;
   longColors = DARK_COLORS;
+  @Select(EditorState.settings)
+  settings$: Observable<Settings>
 
-  constructor(
-    public store: StoreService,
-    private fb: FormBuilder,
-  ) { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.settingsForm = this.fb.group({
@@ -53,7 +61,7 @@ export class SettingsDrawerComponent implements OnInit {
       'longParagraph': []
     });
 
-    this.store.settings$.pipe(
+    this.settings$.pipe(
       take(1),
       tap(settings => {
         this.settingsForm.setValue(settings);
@@ -62,18 +70,17 @@ export class SettingsDrawerComponent implements OnInit {
       debounceTime(this.debounceTime),
       untilDestroyed(this)
     ).subscribe(settings => {
-      this.store.settings = settings;
-      this.save()
+      this.save(settings)
     });
-
   }
 
-  closeSetingsDrawer() {
-    this.store.setingsDrawerVisible = false;
-  }
+  @Dispatch()
+  closeSetingsDrawer = () => new CloseSetingsDrawer()
 
-  save() {
-    localStorage.setItem('settings', JSON.stringify(this.settingsForm.value));
+  @Dispatch()
+  save(settings) {
+    localStorage.setItem('settings', JSON.stringify(settings));
+    return new ChangeSettings(settings);
   }
 
 }

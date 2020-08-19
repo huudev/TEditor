@@ -2,7 +2,7 @@ import { Color } from '@core/model/color.model';
 
 export const DEBOUNCE_TIME_DEFAFULT = 300;
 
-export const TITLE_ARTICLE_DEFAULT = 'Bài viết mới';
+export const ARTICLE_TITLE_DEFAULT = 'Bài viết mới';
 export const WORD_SEPARATOR = [' ', ',', '\n', /* '.' */];
 export const WORD_SEPARATOR_REG = new RegExp('[' + WORD_SEPARATOR.join('') + ']+');
 export const SENTENCE_WORD_SEPARATOR = ['.', ';', '?', '!', '\n']

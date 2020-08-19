@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-import { Article } from '@shared/model/article.model';
-import { ArticleService } from '@shared/service/article.service';
+import { Article } from '@shared/model';
+import { ArticleService } from '@shared/service';
 import { ColumnItem } from '@core/model/column-item.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
     {
       name: 'Từ khóa',
       sortOrder: null,
-      sortFn: (a: Article, b: Article) => (a.key || '').localeCompare((b.key || ''))
+      sortFn: (a: Article, b: Article) => (a.keyword || '').localeCompare((b.keyword || ''))
     },
     {
       name: 'Ngày tạo',

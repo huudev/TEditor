@@ -3,12 +3,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "paths": {
-      "@shared/*": ["src/app/shared/*"],
-      "@core/*": ["src/app/core/*"],
-      "@app/*": ["src/app/*"]
-    }
+    "esModuleInterop": true
   },
   "files": [
     "src/main.ts",

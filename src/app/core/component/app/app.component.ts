@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { routerTransition } from '@core/animate';
 
-import { RouteInterceptorService } from '@shared/service/route-interceptor.service';
+import { RouteInterceptorService } from '@shared/service';
 
 @Component({
   selector: 'app-root',

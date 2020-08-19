@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class ToolService {
-    filterObject(obj) {
+    static filterObject(obj) {
         const ret = {};
         Object.keys(obj)
             .filter((key) => obj[key] !== undefined)

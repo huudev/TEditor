@@ -1,5 +1,5 @@
 <nz-drawer [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
-  [nzMaskClosable]="true" [nzWidth]="720" [nzVisible]="store.settingsDrawerVisible$ | async" nzTitle="Cài đặt"
+  [nzMaskClosable]="true" [nzWidth]="720" [nzVisible]="settingsDrawerVisible$ | async" nzTitle="Cài đặt"
   (nzOnClose)="closeSetingsDrawer()">
   <form nz-form [formGroup]="settingsForm">
     <nz-divider nzText="Trong câu" nzOrientation="left"></nz-divider>

@@ -29,7 +29,7 @@
   </nz-breadcrumb>
   <nz-page-header-title>{{isCreateMode? 'Bài viết mới': 'Chỉnh sửa'}}</nz-page-header-title>
   <nz-page-header-subtitle>
-    <span nz-typography nzCopyable nzEditable [(nzContent)]="titleModel"></span>
+    <span nz-typography nzCopyable [nzContent]="articleTile$ | async"></span>
   </nz-page-header-subtitle>
   <nz-page-header-extra>
     <!-- <button nz-button (click)="test()">
@@ -38,35 +38,18 @@
     <button nz-button (click)="openSetingsDrawer()">
       <i nz-icon nzType="setting" nzTheme="outline"></i>Cài đặt
     </button>
-    <button nz-button nzType="primary" (click)="onSaveEditor()">
+    <button nz-button nzType="primary" (click)="requestSave()">
       <i nz-icon nzType="save" nzTheme="outline"></i>Lưu
     </button>
   </nz-page-header-extra>
   <nz-page-header-content>
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
       <div nz-col nzSpan="18">
-        <quill-editor [formControl]="editorControl" [modules]="modules" placeholder="Nhập cái gì đó..."
-          [styles]="{'max-height': 'calc(100vh - 300px)'}" (onEditorCreated)="onEditorCreated($event)"
-          (onContentChanged)="onContentChangedWrap($event)" (onSelectionChanged)="onSelectionChanged($event)">
-        </quill-editor>
+        <app-editor></app-editor>
       </div>
       <div nz-col nzSpan="6">
-        <h3>Chức năng</h3>
-        <form nz-form>
-          <nz-form-item>
-            <nz-form-label>Cảnh báo độ dài câu</nz-form-label>
-            <nz-form-control>
-              <nz-switch [formControl]="longSentenceWarningControl"></nz-switch>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label>Cảnh báo độ đoạn</nz-form-label>
-            <nz-form-control>
-              <nz-switch [formControl]="longParagraphWarningControl"></nz-switch>
-            </nz-form-control>
-          </nz-form-item>
-        </form>
-        <app-text-info [text]="text" [(keyword)]="key"></app-text-info>
+        <app-support-control></app-support-control>
+        <app-text-info></app-text-info>
       </div>
     </div>
   </nz-page-header-content>
@@ -84,8 +67,6 @@
   </nz-empty>
 </div>
 <!-- title modal -->
-<app-title-modal [titleModel]="titleModel" [originalTitle]="articleModel?.title" (onSubmit)="saveArtice($event)">
-</app-title-modal>
-
+<app-title-modal></app-title-modal>
 <!-- drawer settings -->
 <app-settings-drawer></app-settings-drawer>

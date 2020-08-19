@@ -10,12 +10,14 @@ import { environment } from 'src/environments/environment';
 import { LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
 
+import { VarDirective } from '../shared/directive/ng-var.directive';
+
 export function playerFactory() {
   return player;
 }
 
 @NgModule({
-  declarations: [],
+  declarations: [VarDirective],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -33,7 +35,8 @@ export function playerFactory() {
     AngularFireModule,
 
     NgZorroAntdModule,
-    LottieModule
+    LottieModule,
+    VarDirective
   ]
 })
 export class SharedModule { }

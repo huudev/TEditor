@@ -8,5 +8,6 @@ export const environment = {
     storageBucket: "thuy-2038.appspot.com",
     messagingSenderId: "567881981665",
     appId: "1:567881981665:web:8fd4f284df9405544b21a0"
-  }
+  },
+  ngxsPlugins: []
 };

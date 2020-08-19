@@ -47,7 +47,7 @@
                 (nzCheckedChange)="onItemChecked(data.id, $event)"></td> -->
               <td><a [routerLink]="['/safe-editor',data.id]">{{ data.title }}</a></td>
               <td>{{ data.descriptions }}</td>
-              <td>{{ data.key }}</td>
+              <td>{{ data.keyword }}</td>
               <td>{{ data.createAt | date: 'hh:mm dd/MM/yyyy' }}</td>
               <td>
                 <a [routerLink]="['/safe-editor',data.id]">Sửa</a>

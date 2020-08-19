@@ -1,7 +1,8 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 export const environment = {
   production: false,
   firebaseConfig: {
@@ -12,7 +13,11 @@ export const environment = {
     storageBucket: "thuy-2038.appspot.com",
     messagingSenderId: "567881981665",
     appId: "1:567881981665:web:8fd4f284df9405544b21a0"
-  }
+  },
+  ngxsPlugins: [
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot({ collapsed: true })
+  ]
 };
 
 /*

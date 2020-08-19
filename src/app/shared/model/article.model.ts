@@ -5,7 +5,7 @@ export interface Article {
     normalizedTitle: string;
     content: string;
     descriptions?: string;
-    key?: string;
+    keyword?: string;
     createAt?: Date | number;
     updateAt?: Date | number;
 }
