@@ -7,7 +7,7 @@ import { RANGE_SENTENCE_DEFAULT, MEDIUM_SENTENCE_COLOR_DEFAULT, LONG_SENTENCE_CO
 import { ChangeText, ChangeSettings, InitContent, ChangeSupportLongSentenceWarning, ChangeSupportLongParagraphWarning, ChangeIsDirty } from '../action/editor.action';
 import { ToolService } from '@shared/service';
 
-const SETTING_DEFAULT: Settings = {
+export const SETTING_DEFAULT: Settings = {
     range: RANGE_SENTENCE_DEFAULT,
     mediumColor: MEDIUM_SENTENCE_COLOR_DEFAULT,
     longColor: LONG_SENTENCE_COLOR_DEFAULT,

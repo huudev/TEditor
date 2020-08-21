@@ -1,3 +1,4 @@
+import { SETTING_DEFAULT } from './../../state/editor.state';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { take, tap, switchMap, debounceTime } from 'rxjs/operators';
@@ -81,6 +82,11 @@ export class SettingsDrawerComponent implements OnInit {
   save(settings) {
     localStorage.setItem('settings', JSON.stringify(settings));
     return new ChangeSettings(settings);
+  }
+
+  resetSettings() {
+    localStorage.removeItem('settings');
+    this.settingsForm.setValue(SETTING_DEFAULT)
   }
 
 }

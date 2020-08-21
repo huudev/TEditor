@@ -31,9 +31,11 @@
         </li>
       </ul>
     </nz-header>
-    <nz-content style="position:  relative;perspective:  1200px; transformStyle: 'preserve-3d';overflow:  hidden;" [@routerTransition]="animParam">
-      <router-outlet #routerOutlet="outlet" (activate)='onActivate($event)'></router-outlet>
+    <nz-content style="position:  relative;perspective:  1200px; transformStyle: 'preserve-3d';overflow:  hidden;"
+      [@routerTransition]="animParam">
+      <router-outlet (activate)='onActivate($event)'></router-outlet>
     </nz-content>
-    <nz-footer style="background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);">Ant Design ©2020 Implement By Angular</nz-footer>
+    <nz-footer style="background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);">Ant Design ©2020 Implement
+      By Angular</nz-footer>
   </nz-layout>
 </nz-layout>

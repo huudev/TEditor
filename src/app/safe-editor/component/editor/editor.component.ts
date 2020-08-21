@@ -1,18 +1,19 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { UpdateContent } from './../../action/home.action';
+import { MediatorService } from './../../service/mediator.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { untilDestroyed, UntilDestroy } from '@ngneat/until-destroy';
-import { debounceTime, distinctUntilKeyChanged, tap, mergeMap, delayWhen } from 'rxjs/operators';
+import { debounceTime, distinctUntilKeyChanged, delayWhen, tap } from 'rxjs/operators';
 import { DEBOUNCE_TIME_DEFAFULT, SENTENCE_WORD_SEPARATOR } from '@shared/app.const';
 import Quill from 'quill';
 import { FormControl } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TextService } from '@shared/service';
-import { Select, ofActionDispatched, Actions, Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { Settings } from '@app/safe-editor/model/settings.model';
 import { EditorState } from '@app/safe-editor/state/editor.state';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 import { ChangeText, ChangeIsDirty, } from '@app/safe-editor/action/editor.action';
-import { PreSaveArticle, UpdateContent, SaveArticle } from '@app/safe-editor/action/home.action';
 
 @UntilDestroy()
 @Component({
@@ -56,17 +57,11 @@ export class EditorComponent implements OnInit {
     private message: NzMessageService,
     private textService: TextService,
     private store: Store,
-    private actions$: Actions) { }
+    private mediatorService: MediatorService
+  ) { }
   ngOnInit(): void {
     this.editorControl = new FormControl();
     this.onContentChangedSub$ = new Subject();
-    this.actions$.pipe(untilDestroyed(this), ofActionDispatched(PreSaveArticle),
-      mergeMap(() => this.store.dispatch(new UpdateContent(JSON.stringify(this.editor.getContents())))),
-      mergeMap(() => this.store.dispatch(new SaveArticle()))
-    ).subscribe(() => {
-      this.changeIsDirty(false);
-      this.editorControl.markAsPristine();
-    });
     this.editorInit$ = new ReplaySubject(1);
     this.content$.pipe(untilDestroyed(this), delayWhen(() => this.editorInit$))
       .subscribe(content => {
@@ -80,13 +75,14 @@ export class EditorComponent implements OnInit {
         this.changeIsDirty(false);
         this.editorControl.markAsPristine();
       })
+    this.mediatorService.addTask(() => this.preSaveArticle());
   }
 
   init(): void {
     this.onContentChangedSub$.pipe(
-      untilDestroyed(this),
       debounceTime(this.debounceTime),
-      distinctUntilKeyChanged('html')
+      distinctUntilKeyChanged('html'),
+      untilDestroyed(this)
     ).subscribe(supportControl => {
       this.changeText(this.editor.getText());
       if (this.isLatestSetContent) {
@@ -118,6 +114,14 @@ export class EditorComponent implements OnInit {
         this.clearBlockquote();
       }
     })
+  }
+
+  preSaveArticle() {
+    return this.store.dispatch(new UpdateContent(JSON.stringify(this.editor.getContents())))
+      .pipe(tap(() => {
+        this.changeIsDirty(false);
+        this.editorControl.markAsPristine();
+      }))
   }
 
   handlerSupport() {

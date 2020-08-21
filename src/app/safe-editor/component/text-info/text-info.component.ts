@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { untilDestroyed, UntilDestroy } from '@ngneat/until-destroy';
 import { TextService } from '@shared/service';
 import { DEBOUNCE_TIME_DEFAFULT } from '@shared/app.const';
 import { debounceTime, withLatestFrom } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Select } from '@ngxs/store';
 import { HomeState } from '@app/safe-editor/state/home.state';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
@@ -21,40 +21,39 @@ import { EditorState } from '@app/safe-editor/state/editor.state';
 export class TextInfoComponent implements OnInit {
   debounceTime = DEBOUNCE_TIME_DEFAFULT;
   @Select(EditorState.text)
-  text$: Observable<string>;
+  text$: Observable<string>
   sentences = 0;
   words = 0;
   @Select(HomeState.keyword)
   keyword$: Observable<string>
+  keyword: string
   keywordDensity = 0;
   keywordControl: FormControl;
   // queue = {}
+  text: string;
 
-  constructor(
-    private textService: TextService,
-  ) { }
-
+  constructor(private textService: TextService) { }
   ngOnInit(): void {
-    this.keywordControl = new FormControl();
-    this.keywordControl.valueChanges.pipe(
-      debounceTime(this.debounceTime),
-      withLatestFrom(this.text$),
-      untilDestroyed(this)
-    ).subscribe(([keyword, text]) => this.changeKeyword(keyword, text));
-
-    this.text$.pipe(withLatestFrom(this.keyword$), untilDestroyed(this))
-      .subscribe(([text, keyword]) => {
-        this.keywordControl.setValue(keyword)
+    this.text$.pipe(untilDestroyed(this))
+      .subscribe(text => {
+        this.text = text;
         this.updateCountWords(text);
         this.updateCountSentences(text);
-        this.updateKeyDensity(text, keyword || '');
+        this.updateKeyDensity(text, this.keyword || '');
       })
+    this.keywordControl = new FormControl();
+    this.keywordControl.valueChanges.pipe(debounceTime(this.debounceTime), untilDestroyed(this))
+      .subscribe(keyword => {
+        this.keyword = keyword;
+        this.changeKeyword(keyword, this.text);
+      });
 
-      this.keyword$.subscribe(x=>{
-        if(x){
-          this.keywordControl.setValue(x)
-        }
-      })
+    this.keyword$.pipe(untilDestroyed(this)).subscribe(keyword => {
+      if (keyword) {
+        this.keyword = keyword;
+        this.keywordControl.setValue(keyword);
+      }
+    })
   }
 
   // ngOnChanges(changes: SimpleChanges): void {
@@ -89,5 +88,4 @@ export class TextInfoComponent implements OnInit {
   updateKeyDensity(text: string, key: string) {
     this.keywordDensity = this.textService.countKeyDensity(text, key, this.words);
   }
-
 }

@@ -1,6 +1,8 @@
+import { SaveArticle } from './../../action/home.action';
+import { MediatorService } from './../../service/mediator.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, CanDeactivate } from '@angular/router';
-import { combineLatest, throwError, Observable } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -8,19 +10,20 @@ import { Article } from '@shared/model';
 import { ArticleService } from '@shared/service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AnimationOptions } from 'ngx-lottie';
-import { Select, Store } from '@ngxs/store';
+import { Select, Store, Actions, ofActionDispatched } from '@ngxs/store';
 import { Dispatch } from '@ngxs-labs/dispatch-decorator';
 
 import { HomeState } from '../../state/home.state';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { ShowTitleModal, InitArticle, ShowSetingsDrawer } from '../../action/home.action';
+import { ShowTitleModal, InitArticle, ShowSetingsDrawer, PreSaveArticle } from '../../action/home.action';
 import { EditorState } from '@app/safe-editor/state/editor.state';
 
 @UntilDestroy()
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [MediatorService]
 })
 export class HomeComponent implements OnInit, CanDeactivate<any> {
   pageLoading = true;
@@ -40,20 +43,23 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
     private message: NzMessageService,
     private store: Store,
     private modal: NzModalService,
-    private articleService: ArticleService) { }
+    private articleService: ArticleService,
+    private actions$: Actions,
+    private mediatorService: MediatorService) { }
   ngOnInit(): void {
     this.handlerParam();
+    this.actions$.pipe(
+      ofActionDispatched(PreSaveArticle),
+      switchMap(() => this.mediatorService.executeTask()),
+      switchMap(() => this.store.dispatch(new SaveArticle())),
+      untilDestroyed(this)
+    ).subscribe();
   }
 
   handlerParam() {
-    const routeData$ = combineLatest(
-      [
-        this.route.data.pipe(map(data => data.isCreateMode)),
-        this.route.paramMap.pipe(map(params => params.get('id')))
-      ])
-    routeData$.pipe(
-      untilDestroyed(this),
-      tap(([isCreateMode, id]) => {
+    this.route.data.pipe(
+      map(data => data.isCreateMode),
+      tap(isCreateMode => {
         this.noData = false;
         this.isCreateMode = isCreateMode;
         if (isCreateMode) {
@@ -63,15 +69,17 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
           this.pageLoading = true;
         }
       }),
-      filter(([isCreateMode, id]) => isCreateMode == false),
-      switchMap(([isCreateMode, id]) => {
+      filter(isCreateMode => isCreateMode == false),
+      switchMap(() => this.route.paramMap.pipe(map(params => params.get('id')))),
+      switchMap(id => {
         if (!id) {
           return throwError('article is invalid');
         } else {
           return this.articleService.getById(id);
         }
       }),
-      tap(() => this.pageLoading = false, () => this.pageLoading = false)
+      tap(() => this.pageLoading = false, () => this.pageLoading = false),
+      untilDestroyed(this)
     ).subscribe(aricle => {
       if (aricle == null) {
         this.handlerError();
