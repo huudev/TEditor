@@ -63,7 +63,7 @@ export class EditorComponent implements OnInit {
     this.editorControl = new FormControl();
     this.onContentChangedSub$ = new Subject();
     this.editorInit$ = new ReplaySubject(1);
-    this.content$.pipe(untilDestroyed(this), delayWhen(() => this.editorInit$))
+    this.content$.pipe(delayWhen(() => this.editorInit$), untilDestroyed(this))
       .subscribe(content => {
         if (content) {
           this.editor.setContents(JSON.parse(content), 'user');
@@ -181,10 +181,10 @@ export class EditorComponent implements OnInit {
   }
 
   onEditorCreated(event) {
-    this.editor = event;
-    this.init();
-    this.editorInit$.next()
-    this.addKeyBinding();
+    // this.editor = event;
+    // this.init();
+    // this.editorInit$.next()
+    // this.addKeyBinding();
   }
 
   onSelectionChanged(event) {
@@ -193,11 +193,11 @@ export class EditorComponent implements OnInit {
 
   onContentChangedWrap(event) {
     if (event.source != 'api') {
-      this.onContentChangedSub$.next(event)
+      // this.onContentChangedSub$.next(event)
     }
   }
 
-  @Dispatch()
+  // @Dispatch()
   changeText = (text: string) => new ChangeText(text)
 
   clearBackground() {
