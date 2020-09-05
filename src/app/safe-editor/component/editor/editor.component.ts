@@ -181,10 +181,10 @@ export class EditorComponent implements OnInit {
   }
 
   onEditorCreated(event) {
-    // this.editor = event;
-    // this.init();
-    // this.editorInit$.next()
-    // this.addKeyBinding();
+    this.editor = event;
+    this.init();
+    this.editorInit$.next()
+    this.addKeyBinding();
   }
 
   onSelectionChanged(event) {
@@ -193,11 +193,11 @@ export class EditorComponent implements OnInit {
 
   onContentChangedWrap(event) {
     if (event.source != 'api') {
-      // this.onContentChangedSub$.next(event)
+      this.onContentChangedSub$.next(event)
     }
   }
 
-  // @Dispatch()
+  @Dispatch()
   changeText = (text: string) => new ChangeText(text)
 
   clearBackground() {

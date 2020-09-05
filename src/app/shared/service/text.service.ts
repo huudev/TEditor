@@ -45,7 +45,7 @@ export class TextService {
     if (key == '' || words == 0) {
       return 0;
     }
-    keys = (text.match(new RegExp(key, 'i')) || []).length;
+    keys = (text.match(new RegExp('\\b'+key+'\\b', 'ig')) || []).length;
     const countWord = this.countWord(key);
     return +((keys * countWord / (words / 100)).toFixed(2))
   }

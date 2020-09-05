@@ -39,18 +39,17 @@ export class TextInfoComponent implements OnInit {
         this.text = text;
         this.updateCountWords(text);
         this.updateCountSentences(text);
-        this.updateKeyDensity(text, this.keyword || '');
+        this.updateKeyDensity();
       })
     this.keywordControl = new FormControl();
     this.keywordControl.valueChanges.pipe(debounceTime(this.debounceTime), untilDestroyed(this))
       .subscribe(keyword => {
         this.keyword = keyword;
-        this.changeKeyword(keyword, this.text);
+        this.changeKeyword();
       });
 
     this.keyword$.pipe(untilDestroyed(this)).subscribe(keyword => {
       if (keyword) {
-        this.keyword = keyword;
         this.keywordControl.setValue(keyword);
       }
     })
@@ -72,9 +71,9 @@ export class TextInfoComponent implements OnInit {
   // }
 
   @Dispatch()
-  changeKeyword(keyword: string, text: string) {
-    this.updateKeyDensity(text, keyword);
-    return new ChangeKeyword(keyword);
+  changeKeyword() {
+    this.updateKeyDensity();
+    return new ChangeKeyword(this.keyword);
   }
 
   updateCountWords(text: string) {
@@ -85,7 +84,7 @@ export class TextInfoComponent implements OnInit {
     this.sentences = this.textService.countSentence(text);
   }
 
-  updateKeyDensity(text: string, key: string) {
-    this.keywordDensity = this.textService.countKeyDensity(text, key, this.words);
+  updateKeyDensity() {
+    this.keywordDensity = this.textService.countKeyDensity(this.text, this.keyword, this.words);
   }
 }
