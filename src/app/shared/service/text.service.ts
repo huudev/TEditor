@@ -41,16 +41,35 @@ export class TextService {
 
   countKeyDensity(text: string = '', key: string = '', words: number) {
     key = key.trim();
-    let keys;
     if (key == '' || words == 0) {
       return 0;
     }
-    keys = (text.match(new RegExp('\\b'+key+'\\b', 'ig')) || []).length;
+    key = this.escapeRegExp(key);
+    let numberKeyAppearInText = this.countNumberKeyAppearInText(text, key);
     const countWord = this.countWord(key);
-    return +((keys * countWord / (words / 100)).toFixed(2))
+    return +((numberKeyAppearInText * countWord / (words / 100)).toFixed(2))
   }
 
   isLetter(char) {
     return RegExp(/^\p{L}/, 'u').test(char);
+  }
+
+  escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  }
+
+  countNumberKeyAppearInText(text: string, key: string): number {
+    text = text.normalize('NFKC');
+    key = key.normalize('NFKC');
+    // keys = (text.match(new RegExp('[\\b\\n]'+key+'([\\b!\.:\?!;])', 'ig')) || []).length;
+    // const regMatch = text.match(new RegExp('[\\b\\n]'+key+'([\\b!\.:\?!;])', 'ig'));
+    // const regMatch = text.split(new RegExp('\\b'+key, 'ig'))
+
+    // const matchs = text.match(new RegExp('\\b' + key + '(\\b|[!\.:\?!;])', 'ig'));
+    const reg =new RegExp('\\b' + key + '(!|:|\\?|\\s|,|;|\\.)', 'ig');
+    console.log(reg);
+    
+    const matchs = text.match(reg);
+    return (matchs || []).length;
   }
 }

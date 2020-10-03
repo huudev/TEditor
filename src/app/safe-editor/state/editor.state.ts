@@ -81,11 +81,12 @@ export class EditorState {
     @Action(InitContent)
     initContent({ patchState }: StateContext<EditorStateModel>, action: InitContent) {
         if (action.content) {
-            patchState({ content: action.content })
+            patchState({ content: action.content, isDirty: false })
         } else {
             patchState({
                 content: null,
-                textContent: ''
+                textContent: '',
+                isDirty: false
             })
         }
     }

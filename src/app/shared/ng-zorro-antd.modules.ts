@@ -5,6 +5,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -32,6 +33,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
         NzLayoutModule,
         NzIconModule,
         NzButtonModule,
+        NzDropDownModule,
         NzBreadCrumbModule,
         NzMenuModule,
         NzPageHeaderModule,

@@ -114,10 +114,11 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
   showTitleModel = () => new ShowTitleModal()
 
   skipCheckDeactivate = false;
-  checkDeactive() {
+  checkCanDeactive() {
     if (this.skipCheckDeactivate) {
       return true;
     }
+    // if not dirty that accept
     const dirty = this.store.selectSnapshot(EditorState.isDirty);
     if (!dirty) {
       return true;
@@ -129,8 +130,8 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
     return false;
   }
 
-  canDeactivate(nextUrl: string): boolean {
-    if (this.checkDeactive()) return true;
+  canDeactivate(nextUrl?: string): boolean {
+    if (this.checkCanDeactive()) return true;
     const modal: NzModalRef = this.modal.create({
       nzCancelText: 'Hủy',
       nzContent: 'Hãy lưu trước khi rời khỏi trang này',
@@ -147,7 +148,7 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
           onClick: () => {
             this.skipCheckDeactivate = true;
             modal.destroy();
-            this.router.navigate([nextUrl])
+            this.router.navigate([nextUrl || '/'])
           }
         },
         {
@@ -165,7 +166,7 @@ export class HomeComponent implements OnInit, CanDeactivate<any> {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
-    return this.checkDeactive();
+    return this.canDeactivate();
   }
 
   @Dispatch()

@@ -28,17 +28,28 @@
           </button>
           <span>Selected {{ setOfCheckedId.size }} items</span>
         </div> -->
-        <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfData" [nzLoading]="loading"
-        [nzPageSizeOptions]="[5,10,15,20]" [nzPageSize]="5"
+        <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="listOfDisplayData"
+          [nzLoading]="loading" [nzPageSizeOptions]="[5,10,15,20]" [nzPageSize]="5"
           (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
           <thead>
             <tr>
               <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th> -->
-              <th *ngFor="let column of listOfColumns" [nzSortOrder]="column.sortOrder" [nzSortFn]="column.sortFn"
-                [nzSortDirections]="column.sortDirections" [nzFilterMultiple]="column.filterMultiple"
-                [nzFilters]="column.listOfFilter" [nzFilterFn]="column.filterFn">
-                {{ column.name }}
-              </th>
+              <ng-container *ngFor="let column of listOfColumns">
+                <!-- <th nzCustomFilter>
+                  {{ column.name }}
+                 
+                </th> -->
+                <th [(nzSortOrder)]="column.sortOrder" [nzSortFn]="column.sortFn"
+                  [nzSortDirections]="column.sortDirections" [nzFilterMultiple]="column.filterMultiple"
+                  [nzFilters]="column.listOfFilter" [nzFilterFn]="column.filterFn"
+                  [nzCustomFilter]="column.name=='Tiêu đề'?true:null">
+                  {{ column.name }}
+                  <nz-filter-trigger *ngIf="column.name=='Tiêu đề'" [(nzVisible)]="visible" [nzActive]="searchValue.length > 0"
+                    [nzDropdownMenu]="menu">
+                    <i nz-icon nzType="search"></i>
+                  </nz-filter-trigger>
+                </th>
+              </ng-container>
             </tr>
           </thead>
           <tbody>
@@ -58,6 +69,17 @@
             </tr>
           </tbody>
         </nz-table>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <div class="ant-table-filter-dropdown">
+            <div class="search-box">
+              <input type="text" nz-input placeholder="Nhập tiêu đề.." [(ngModel)]="searchValue" />
+              <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                Tìm kiếm
+              </button>
+              <button nz-button nzSize="small" (click)="reset()">Khôi phục</button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
       </div>
       <div nz-col nzSpan="6">
 

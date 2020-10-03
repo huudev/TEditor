@@ -16,6 +16,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class HomeComponent implements OnInit {
   checked = false;
   loading = true;
+  searchValue = '';
+  visible = false;
 
   listOfColumns: ColumnItem[] = [
     {
@@ -35,7 +37,7 @@ export class HomeComponent implements OnInit {
     },
     {
       name: 'Ngày tạo',
-      sortOrder: null,
+      sortOrder: 'descend',
       sortFn: (a: Article, b: Article) => (a.createAt as number) - (b.createAt as number)
     },
     {
@@ -72,8 +74,9 @@ export class HomeComponent implements OnInit {
   ];
   indeterminate = false;
 
-  listOfData: Article[] = [];
-  listOfCurrentPageData: Article[] = [];
+  listOfData: Article[] = []; // original list data
+  listOfDisplayData: Article[] = []; // data after search
+  listOfCurrentPageData: Article[] = []; // data current display per page
   setOfCheckedId = new Set<string>();
 
   constructor(
@@ -83,10 +86,10 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.articleService.getAll().pipe(untilDestroyed(this)).subscribe(articles => {
       this.listOfData = articles;
+      this.search();
       this.loading = false;
     });
   }
-
 
   updateCheckedSet(id: string, checked: boolean): void {
     if (checked) {
@@ -132,6 +135,16 @@ export class HomeComponent implements OnInit {
     this.articleService.delete(id)
       .then(() => this.message.success('Xóa thành công'))
       .catch(() => this.message.error('Xóa thất bại'))
+  }
+
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.visible = false;
+    this.listOfDisplayData = this.listOfData.filter((item: Article) => item.title.indexOf(this.searchValue) !== -1);
   }
 
 }
